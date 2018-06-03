@@ -6,11 +6,13 @@
 # Special thanks to: https://albeec13.github.io/2017/09/26/raspberry-pi-zero-w-simultaneous-ap-and-managed-mode-wifi/
 
 MAC_ADDRESS="$(cat /sys/class/net/wlan0/address)"
-CLIENT_SSID="${1}"
-CLIENT_PASSPHRASE="${2}"
-AP_SSID="${3}"
-AP_PASSPHRASE="${4}"
-
+AP_SSID="${1}"
+AP_PASSPHRASE="${2}"
+# get ssid + psk
+CLIENT_SSID=$(iwgetid)
+CLIENT_SSID=$(echo $CLIENT_SSID| cut -d'"' -f 2)
+CLIENT_PASSPHRASE=$(grep -A1 $CLIENT_SSID /etc/wpa_supplicant/wpa_supplicant.conf)
+CLIENT_PASSPHRASE=$(echo $CLIENT_PASSPHRASE| cut -d'"' -f 4)
 # Install dependencies
 sudo apt -y update
 sudo apt -y upgrade
